@@ -1,6 +1,11 @@
 namespace DailyNews.Models;
 
-// TODO (Phase 2): add properties - Id, Name, Bio, ImageUrl.
 public class Author
 {
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Bio { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
+
+    public ICollection<News> News { get; set; } = new List<News>();
 }
