@@ -1,8 +1,10 @@
+using DailyNews.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// TODO (Phase 2): register NewsDbContext here once EF Core wiring is ready
-// builder.Services.AddDbContext<NewsDbContext>(options =>
-//     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<NewsDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllersWithViews();
 
