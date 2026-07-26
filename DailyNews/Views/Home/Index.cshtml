@@ -31,6 +31,16 @@
 @if (hero != null)
 {
     <div class="hero-article mb-5">
+        <div class="img-wrap img-wrap-hero mb-3">
+            @if (!string.IsNullOrEmpty(hero.ImageUrl))
+            {
+                <img src="@hero.ImageUrl" alt="@hero.Title" />
+            }
+            else
+            {
+                <div class="img-placeholder"><span>DailyNews</span></div>
+            }
+        </div>
         <span class="@BadgeClass(hero.Category.Name)">@hero.Category.Name</span>
         <h1 class="hero-title mt-2">
             <a asp-action="Details" asp-route-id="@hero.Id">@hero.Title</a>
@@ -52,6 +62,16 @@
         {
             <div class="col">
                 <div class="card h-100">
+                    <div class="img-wrap img-wrap-card">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="img-placeholder"><span>DN</span></div>
+                        }
+                    </div>
                     <div class="card-body">
                         <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
                         <h5 class="card-title mt-2">@item.Title</h5>

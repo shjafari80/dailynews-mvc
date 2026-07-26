@@ -18,6 +18,17 @@
     var readingMinutes = Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
 }
 
+<div class="img-wrap img-wrap-hero mb-3">
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" alt="@Model.Title" />
+    }
+    else
+    {
+        <div class="img-placeholder"><span>DailyNews</span></div>
+    }
+</div>
+
 <span class="@BadgeClass(Model.Category.Name)">@Model.Category.Name</span>
 <h1 class="mt-2 mb-3">@Model.Title</h1>
 
@@ -42,6 +53,16 @@
         {
             <div class="col">
                 <div class="card h-100">
+                    <div class="img-wrap img-wrap-card">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="img-placeholder"><span>DN</span></div>
+                        }
+                    </div>
                     <div class="card-body">
                         <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
                         <h5 class="card-title mt-2">@item.Title</h5>
