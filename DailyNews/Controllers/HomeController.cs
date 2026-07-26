@@ -1,14 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using DailyNews.Models;
 
 namespace DailyNews.Controllers;
 
 public class HomeController : Controller
 {
-    // TODO (Phase 2): inject NewsDbContext and load the latest news here.
-    public IActionResult Index()
+    private readonly NewsDbContext _context;
+
+    public HomeController(NewsDbContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var news = await _context.News
+            .Include(n => n.Category)
+            .Include(n => n.Author)
+            .OrderByDescending(n => n.PublishDate)
+            .ToListAsync();
+
+        return View(news);
     }
 
     public IActionResult Privacy()
@@ -21,7 +34,7 @@ public class HomeController : Controller
         return View();
     }
 
-    // TODO (Phase 2): load a single article by id from NewsDbContext.
+    // TODO (#9): load a single article by id from NewsDbContext.
     public IActionResult Details(int id)
     {
         return View();
