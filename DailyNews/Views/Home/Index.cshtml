@@ -11,32 +11,56 @@
         "Culture" => "badge-category badge-culture",
         _ => "badge-category"
     };
+
+    var newsList = Model.ToList();
+    var hero = newsList.FirstOrDefault();
+    var rest = newsList.Skip(1).ToList();
 }
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
-                    <h5 class="card-title mt-2">@item.Title</h5>
-                    <p class="card-text text-muted small">
-                        by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
-                    </p>
-                    <p class="card-text">
-                        @(item.Content.Length > 150 ? item.Content.Substring(0, 150) + "..." : item.Content)
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Read More</a>
+@if (hero != null)
+{
+    <div class="hero-article mb-5">
+        <span class="@BadgeClass(hero.Category.Name)">@hero.Category.Name</span>
+        <h1 class="hero-title mt-2">
+            <a asp-action="Details" asp-route-id="@hero.Id">@hero.Title</a>
+        </h1>
+        <p class="text-muted small mb-2">
+            by @hero.Author.Name &bull; @hero.PublishDate.ToString("dd MMM yyyy")
+        </p>
+        <p class="hero-excerpt">
+            @(hero.Content.Length > 280 ? hero.Content.Substring(0, 280) + "..." : hero.Content)
+        </p>
+        <a asp-action="Details" asp-route-id="@hero.Id" class="btn btn-dark">Read Full Story</a>
+    </div>
+}
+
+@if (rest.Any())
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in rest)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                        <h5 class="card-title mt-2">@item.Title</h5>
+                        <p class="card-text text-muted small">
+                            by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                        </p>
+                        <p class="card-text">
+                            @(item.Content.Length > 150 ? item.Content.Substring(0, 150) + "..." : item.Content)
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Read More</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
 
-@if (!Model.Any())
+@if (!newsList.Any())
 {
     <p class="text-muted text-center mt-4">No articles yet.</p>
 }
