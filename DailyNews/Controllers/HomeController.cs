@@ -34,10 +34,19 @@ public class HomeController : Controller
         return View();
     }
 
-    // TODO (#9): load a single article by id from NewsDbContext.
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        return View();
+        var news = await _context.News
+            .Include(n => n.Category)
+            .Include(n => n.Author)
+            .FirstOrDefaultAsync(n => n.Id == id);
+
+        if (news == null)
+        {
+            return NotFound();
+        }
+
+        return View(news);
     }
 
     public IActionResult Error()
