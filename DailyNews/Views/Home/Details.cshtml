@@ -16,6 +16,12 @@
 
     var wordCount = Model.Content.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
     var readingMinutes = Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
+
+    ViewData["MetaDescription"] = Model.Content.Length > 160 ? Model.Content.Substring(0, 160) + "..." : Model.Content;
+    if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        ViewData["MetaImage"] = Model.ImageUrl;
+    }
 }
 
 <div class="img-wrap img-wrap-hero mb-3">
