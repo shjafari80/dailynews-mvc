@@ -233,3 +233,42 @@ footer {
     color: var(--color-ink);
     opacity: 0.45;
 }
+
+/* ===== Hero carousel ===== */
+.hero-carousel {
+    border-bottom: 2px solid var(--color-rule);
+    padding-bottom: 2rem;
+}
+
+.hero-carousel .carousel-control-prev,
+.hero-carousel .carousel-control-next {
+    top: 0;
+    height: 340px;
+    width: 8%;
+    opacity: 0.8;
+}
+
+.hero-carousel .carousel-control-prev:hover,
+.hero-carousel .carousel-control-next:hover {
+    opacity: 1;
+    background: rgba(36, 33, 28, 0.15);
+}
+
+.hero-carousel .carousel-indicators {
+    position: static;
+    margin-top: 1rem;
+}
+
+.hero-carousel .carousel-indicators [data-bs-target] {
+    background-color: var(--color-ink);
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    opacity: 0.3;
+    margin: 0 4px;
+}
+
+.hero-carousel .carousel-indicators .active {
+    opacity: 1;
+}
