@@ -18,10 +18,11 @@ current phase.
 ## Running locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dailynews-mvc.git
-cd dailynews-mvc
+git clone https://github.com/shjafari80/dailynews-mvc.git
+cd dailynews-mvc/DailyNews
 dotnet restore
 dotnet ef database update
+dotnet build
 dotnet run
 ```
 

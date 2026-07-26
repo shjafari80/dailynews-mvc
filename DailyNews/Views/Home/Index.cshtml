@@ -12,9 +12,20 @@
         _ => "badge-category"
     };
 
+    var searchQuery = ViewData["SearchQuery"] as string;
+    var isSearching = !string.IsNullOrWhiteSpace(searchQuery);
     var newsList = Model.ToList();
-    var hero = newsList.FirstOrDefault();
-    var rest = newsList.Skip(1).ToList();
+
+    var hero = isSearching ? null : newsList.FirstOrDefault();
+    var rest = isSearching ? newsList : newsList.Skip(hero != null ? 1 : 0).ToList();
+}
+
+@if (isSearching)
+{
+    <p class="text-muted mb-4">
+        Showing results for "<strong>@searchQuery</strong>"
+        &mdash; <a asp-action="Index">clear search</a>
+    </p>
 }
 
 @if (hero != null)
@@ -60,7 +71,11 @@
     </div>
 }
 
-@if (!newsList.Any())
+@if (!newsList.Any() && isSearching)
+{
+    <p class="text-muted text-center mt-4">No articles match "@searchQuery".</p>
+}
+else if (!newsList.Any())
 {
     <p class="text-muted text-center mt-4">No articles yet.</p>
 }

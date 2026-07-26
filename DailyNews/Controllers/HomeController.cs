@@ -13,13 +13,23 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? query)
     {
-        var news = await _context.News
+        var newsQuery = _context.News
             .Include(n => n.Category)
             .Include(n => n.Author)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            newsQuery = newsQuery.Where(n => EF.Functions.Like(n.Title, $"%{query}%"));
+        }
+
+        var news = await newsQuery
             .OrderByDescending(n => n.PublishDate)
             .ToListAsync();
+
+        ViewData["SearchQuery"] = query;
 
         return View(news);
     }

@@ -16,15 +16,23 @@
         </div>
         <div class="masthead-rule"></div>
         <nav class="navbar navbar-expand-lg">
-            <div class="container justify-content-center">
+            <div class="container position-relative justify-content-center">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Authors" asp-action="Index">Authors</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
                 </ul>
+                <form class="search-form search-form-desktop position-absolute end-0 top-50 translate-middle-y" asp-controller="Home" asp-action="Index" method="get">
+                    <input type="search" name="query" class="form-control form-control-sm" placeholder="Search articles..." value="@ViewData["SearchQuery"]" />
+                </form>
             </div>
         </nav>
+        <div class="container">
+            <form class="search-form search-form-mobile" asp-controller="Home" asp-action="Index" method="get">
+                <input type="search" name="query" class="form-control form-control-sm" placeholder="Search articles..." value="@ViewData["SearchQuery"]" />
+            </form>
+        </div>
     </header>
 
     <main role="main" class="container my-4">
