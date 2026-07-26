@@ -13,6 +13,9 @@
     };
 
     var related = ViewData["RelatedArticles"] as List<DailyNews.Models.News> ?? new List<DailyNews.Models.News>();
+
+    var wordCount = Model.Content.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
+    var readingMinutes = Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
 }
 
 <span class="@BadgeClass(Model.Category.Name)">@Model.Category.Name</span>
@@ -20,7 +23,8 @@
 
 <div class="text-muted mb-4">
     <span>by @Model.Author.Name</span> &bull;
-    <span>@Model.PublishDate.ToString("dd MMMM yyyy - HH:mm")</span>
+    <span>@Model.PublishDate.ToString("dd MMMM yyyy - HH:mm")</span> &bull;
+    <span>~@readingMinutes min read</span>
 </div>
 
 <div class="lead">
