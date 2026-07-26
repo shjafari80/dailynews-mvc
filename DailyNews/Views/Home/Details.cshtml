@@ -2,12 +2,21 @@
 
 @{
     ViewData["Title"] = Model.Title;
+
+    string BadgeClass(string category) => category switch
+    {
+        "Politics" => "badge-category badge-politics",
+        "Economy" => "badge-category badge-economy",
+        "Sports" => "badge-category badge-sports",
+        "Culture" => "badge-category badge-culture",
+        _ => "badge-category"
+    };
 }
 
-<h1 class="mb-3">@Model.Title</h1>
+<span class="@BadgeClass(Model.Category.Name)">@Model.Category.Name</span>
+<h1 class="mt-2 mb-3">@Model.Title</h1>
 
 <div class="text-muted mb-4">
-    <span>@Model.Category.Name</span> &bull;
     <span>by @Model.Author.Name</span> &bull;
     <span>@Model.PublishDate.ToString("dd MMMM yyyy - HH:mm")</span>
 </div>
@@ -16,4 +25,4 @@
     @Model.Content
 </div>
 
-<a asp-action="Index" class="btn btn-secondary mt-4">Back to Home</a>
+<a asp-action="Index" class="btn btn-outline-dark mt-4">Back to Home</a>

@@ -1,1 +1,121 @@
-/* TODO (Phase 3): night-sky theme, card styling, responsive polish */
+/* ===== DailyNews design tokens ===== */
+:root {
+    --color-bg: #F7F1E3;
+    --color-ink: #24211C;
+    --color-rule: #D8CFB8;
+    --color-muted: #6B6455;
+
+    --color-politics: #B23A2E;
+    --color-economy: #2F6F4E;
+    --color-sports: #C97A2B;
+    --color-culture: #5B4B8A;
+
+    --font-display: 'Zilla Slab', serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+}
+
+a {
+    color: var(--color-ink);
+}
+
+/* ===== Masthead ===== */
+.masthead {
+    padding-top: 1.5rem;
+    background-color: var(--color-bg);
+}
+
+.masthead-date {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 0.25rem;
+}
+
+.masthead-title {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--color-ink);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+}
+
+.masthead-title:hover {
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.masthead-rule {
+    margin: 1rem 0 0 0;
+    border-top: 3px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-ink);
+    height: 5px;
+}
+
+.masthead .navbar {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.masthead .nav-link {
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    color: var(--color-ink);
+}
+
+.masthead .nav-link:hover {
+    color: var(--color-politics);
+}
+
+/* ===== Headlines ===== */
+h1, h2, h3, .card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+/* ===== Cards ===== */
+.card {
+    background-color: #FFFEFA;
+    border: 1px solid var(--color-rule);
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(36, 33, 28, 0.06);
+}
+
+.card-footer {
+    background-color: transparent;
+    border-top: 1px solid var(--color-rule);
+}
+
+/* ===== Category badges ===== */
+.badge-category {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25em 0.7em;
+    border-radius: 3px;
+    color: #FFFEFA;
+}
+
+.badge-politics { background-color: var(--color-politics); }
+.badge-economy  { background-color: var(--color-economy); }
+.badge-sports   { background-color: var(--color-sports); }
+.badge-culture  { background-color: var(--color-culture); }
+
+footer {
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-muted);
+}

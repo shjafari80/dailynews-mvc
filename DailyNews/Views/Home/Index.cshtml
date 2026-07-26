@@ -2,9 +2,16 @@
 
 @{
     ViewData["Title"] = "Home";
-}
 
-<h1 class="mb-4">DailyNews</h1>
+    string BadgeClass(string category) => category switch
+    {
+        "Politics" => "badge-category badge-politics",
+        "Economy" => "badge-category badge-economy",
+        "Sports" => "badge-category badge-sports",
+        "Culture" => "badge-category badge-culture",
+        _ => "badge-category"
+    };
+}
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
@@ -12,16 +19,17 @@
         <div class="col">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
+                    <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                    <h5 class="card-title mt-2">@item.Title</h5>
                     <p class="card-text text-muted small">
-                        @item.Category.Name &bull; by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                        by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
                     </p>
                     <p class="card-text">
                         @(item.Content.Length > 150 ? item.Content.Substring(0, 150) + "..." : item.Content)
                     </p>
                 </div>
                 <div class="card-footer">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Read More</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Read More</a>
                 </div>
             </div>
         </div>

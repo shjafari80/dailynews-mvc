@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DailyNews</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
-    <!-- TODO (Phase 3): night-sky theme, styling pass -->
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">DailyNews</a>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Authors" asp-action="Index">Authors</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
-                    </ul>
-                </div>
+    <header class="masthead">
+        <div class="container text-center">
+            <div class="masthead-date">@DateTime.Now.ToString("dddd, dd MMMM yyyy")</div>
+            <a class="masthead-title" asp-controller="Home" asp-action="Index">DailyNews</a>
+        </div>
+        <div class="masthead-rule"></div>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container justify-content-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Authors" asp-action="Index">Authors</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                </ul>
             </div>
         </nav>
     </header>
