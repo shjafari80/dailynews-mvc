@@ -1,12 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DailyNews.Models;
 
 namespace DailyNews.Controllers;
 
 public class AuthorsController : Controller
 {
-    // TODO (Phase 2): inject NewsDbContext and load the real authors list.
-    public IActionResult Index()
+    private readonly NewsDbContext _context;
+
+    public AuthorsController(NewsDbContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var authors = await _context.Authors.ToListAsync();
+        return View(authors);
     }
 }

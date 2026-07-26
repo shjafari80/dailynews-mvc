@@ -1,6 +1,26 @@
+@model IEnumerable<DailyNews.Models.Author>
+
 @{
     ViewData["Title"] = "Authors";
 }
 
-<h1>Authors</h1>
-<p class="text-muted">TODO (Phase 2): render the authors list here.</p>
+<h1 class="mb-4">Authors</h1>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    @foreach (var author in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@author.Name</h5>
+                    <p class="card-text text-muted">@author.Bio</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center mt-4">No authors yet.</p>
+}
