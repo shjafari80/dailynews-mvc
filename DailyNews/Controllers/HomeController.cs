@@ -56,6 +56,16 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        var related = await _context.News
+            .Include(n => n.Category)
+            .Include(n => n.Author)
+            .Where(n => n.CategoryId == news.CategoryId && n.Id != news.Id)
+            .OrderByDescending(n => n.PublishDate)
+            .Take(3)
+            .ToListAsync();
+
+        ViewData["RelatedArticles"] = related;
+
         return View(news);
     }
 
