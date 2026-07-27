@@ -17,8 +17,10 @@
     var newsList = Model.ToList();
 
     const int carouselSize = 4;
+    const int bigCardSize = 3;
     var carouselItems = isSearching ? new List<DailyNews.Models.News>() : newsList.Take(carouselSize).ToList();
-    var rest = isSearching ? newsList : newsList.Skip(carouselItems.Count).ToList();
+    var bigCardItems = isSearching ? new List<DailyNews.Models.News>() : newsList.Skip(carouselItems.Count).Take(bigCardSize).ToList();
+    var rest = isSearching ? newsList : newsList.Skip(carouselItems.Count + bigCardItems.Count).ToList();
 }
 
 @if (isSearching)
@@ -82,14 +84,14 @@
     </div>
 }
 
-@if (rest.Any())
+@if (bigCardItems.Any())
 {
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item in rest)
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        @foreach (var item in bigCardItems)
         {
             <div class="col">
-                <div class="card h-100">
-                    <div class="img-wrap img-wrap-card">
+                <div class="card big-card h-100">
+                    <div class="img-wrap img-wrap-big">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
                             <img src="@item.ImageUrl" alt="@item.Title" />
@@ -101,19 +103,45 @@
                     </div>
                     <div class="card-body">
                         <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
-                        <h5 class="card-title mt-2">@item.Title</h5>
+                        <h4 class="card-title mt-2">
+                            <a asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
+                        </h4>
                         <p class="card-text text-muted small">
                             by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
                         </p>
                         <p class="card-text">
-                            @(item.Content.Length > 150 ? item.Content.Substring(0, 150) + "..." : item.Content)
+                            @(item.Content.Length > 180 ? item.Content.Substring(0, 180) + "..." : item.Content)
                         </p>
-                    </div>
-                    <div class="card-footer">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Read More</a>
                     </div>
                 </div>
             </div>
+        }
+    </div>
+}
+
+@if (rest.Any())
+{
+    <div class="news-list">
+        @foreach (var item in rest)
+        {
+            <a class="news-list-item" asp-action="Details" asp-route-id="@item.Id">
+                <div class="news-list-content">
+                    <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                    <h5 class="news-list-title mt-2">@item.Title</h5>
+                    <p class="news-list-meta">
+                        by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                    </p>
+                    <p class="news-list-excerpt">
+                        @(item.Content.Length > 160 ? item.Content.Substring(0, 160) + "..." : item.Content)
+                    </p>
+                </div>
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <div class="news-list-thumb">
+                        <img src="@item.ImageUrl" alt="@item.Title" />
+                    </div>
+                }
+            </a>
         }
     </div>
 }
