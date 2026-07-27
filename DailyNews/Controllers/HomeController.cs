@@ -13,7 +13,7 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index(string? query)
+    public async Task<IActionResult> Index(string? query, string? category, string? period)
     {
         var newsQuery = _context.News
             .Include(n => n.Category)
@@ -25,11 +25,31 @@ public class HomeController : Controller
             newsQuery = newsQuery.Where(n => EF.Functions.Like(n.Title, $"%{query}%"));
         }
 
+        if (!string.IsNullOrWhiteSpace(category) && category != "All")
+        {
+            newsQuery = newsQuery.Where(n => n.Category.Name == category);
+        }
+
+        if (!string.IsNullOrWhiteSpace(period) && period != "all")
+        {
+            var cutoff = period switch
+            {
+                "today" => DateTime.Today,
+                "week" => DateTime.Today.AddDays(-7),
+                "month" => DateTime.Today.AddMonths(-1),
+                _ => DateTime.MinValue
+            };
+            newsQuery = newsQuery.Where(n => n.PublishDate >= cutoff);
+        }
+
         var news = await newsQuery
             .OrderByDescending(n => n.PublishDate)
             .ToListAsync();
 
         ViewData["SearchQuery"] = query;
+        ViewData["SelectedCategory"] = string.IsNullOrWhiteSpace(category) ? "All" : category;
+        ViewData["SelectedPeriod"] = string.IsNullOrWhiteSpace(period) ? "all" : period;
+        ViewData["Categories"] = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
 
         return View(news);
     }

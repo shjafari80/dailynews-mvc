@@ -12,145 +12,203 @@
         _ => "badge-category"
     };
 
-    var searchQuery = ViewData["SearchQuery"] as string;
+    var searchQuery = ViewData["SearchQuery"] as string ?? "";
+    var selectedCategory = ViewData["SelectedCategory"] as string ?? "All";
+    var selectedPeriod = ViewData["SelectedPeriod"] as string ?? "all";
+    var categories = ViewData["Categories"] as List<DailyNews.Models.Category> ?? new List<DailyNews.Models.Category>();
+
     var isSearching = !string.IsNullOrWhiteSpace(searchQuery);
+    var isFiltering = isSearching || selectedCategory != "All" || selectedPeriod != "all";
+
     var newsList = Model.ToList();
 
     const int carouselSize = 4;
     const int bigCardSize = 3;
-    var carouselItems = isSearching ? new List<DailyNews.Models.News>() : newsList.Take(carouselSize).ToList();
-    var bigCardItems = isSearching ? new List<DailyNews.Models.News>() : newsList.Skip(carouselItems.Count).Take(bigCardSize).ToList();
-    var rest = isSearching ? newsList : newsList.Skip(carouselItems.Count + bigCardItems.Count).ToList();
+    var carouselItems = isFiltering ? new List<DailyNews.Models.News>() : newsList.Take(carouselSize).ToList();
+    var bigCardItems = isFiltering ? new List<DailyNews.Models.News>() : newsList.Skip(carouselItems.Count).Take(bigCardSize).ToList();
+    var rest = isFiltering ? newsList : newsList.Skip(carouselItems.Count + bigCardItems.Count).ToList();
 }
 
-@if (isSearching)
+<div class="filter-toolbar mb-4">
+    <div class="filter-categories">
+        <a asp-action="Index" asp-route-category="All" asp-route-query="@searchQuery" asp-route-period="@selectedPeriod"
+           class="filter-pill @(selectedCategory == "All" ? "active" : "")">All</a>
+        @foreach (var cat in categories)
+        {
+            <a asp-action="Index" asp-route-category="@cat.Name" asp-route-query="@searchQuery" asp-route-period="@selectedPeriod"
+               class="filter-pill @(selectedCategory == cat.Name ? "active" : "")">@cat.Name</a>
+        }
+    </div>
+    <form method="get" asp-action="Index" class="filter-period">
+        <input type="hidden" name="query" value="@searchQuery" />
+        <input type="hidden" name="category" value="@selectedCategory" />
+        <select name="period" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="all" selected="@(selectedPeriod == "all" ? "selected" : null)">All Time</option>
+            <option value="today" selected="@(selectedPeriod == "today" ? "selected" : null)">Today</option>
+            <option value="week" selected="@(selectedPeriod == "week" ? "selected" : null)">This Week</option>
+            <option value="month" selected="@(selectedPeriod == "month" ? "selected" : null)">This Month</option>
+        </select>
+    </form>
+</div>
+
+@if (isFiltering)
 {
     <p class="text-muted mb-4">
-        Showing results for "<strong>@searchQuery</strong>"
-        &mdash; <a asp-action="Index">clear search</a>
+        Showing @newsList.Count result@(newsList.Count == 1 ? "" : "s")
+        @if (isSearching) { <text>for "<strong>@searchQuery</strong>"</text> }
+        &mdash; <a asp-action="Index">clear filters</a>
     </p>
-}
 
-@if (carouselItems.Any())
-{
-    <div id="heroCarousel" class="carousel slide carousel-dark hero-carousel mb-5" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @for (int i = 0; i < carouselItems.Count; i++)
+    @if (newsList.Any())
+    {
+        <div class="news-list">
+            @foreach (var item in newsList)
             {
-                var item = carouselItems[i];
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <div class="img-wrap img-wrap-hero mb-3">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" alt="@item.Title" />
-                        }
-                        else
-                        {
-                            <div class="img-placeholder"><span>DailyNews</span></div>
-                        }
-                    </div>
-                    <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
-                    <h1 class="hero-title mt-2">
-                        <a asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
-                    </h1>
-                    <p class="text-muted small mb-2">
-                        by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
-                    </p>
-                    <p class="hero-excerpt">
-                        @(item.Content.Length > 280 ? item.Content.Substring(0, 280) + "..." : item.Content)
-                    </p>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-dark">Read Full Story</a>
-                </div>
-            }
-        </div>
-
-        <div class="carousel-indicators">
-            @for (int i = 0; i < carouselItems.Count; i++)
-            {
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i"
-                        class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")"
-                        aria-label="Slide @(i + 1)"></button>
-            }
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-}
-
-@if (bigCardItems.Any())
-{
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-        @foreach (var item in bigCardItems)
-        {
-            <div class="col">
-                <div class="card big-card h-100">
-                    <div class="img-wrap img-wrap-big">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" alt="@item.Title" />
-                        }
-                        else
-                        {
-                            <div class="img-placeholder"><span>DN</span></div>
-                        }
-                    </div>
-                    <div class="card-body">
+                <a class="news-list-item" asp-action="Details" asp-route-id="@item.Id">
+                    <div class="news-list-content">
                         <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
-                        <h4 class="card-title mt-2">
-                            <a asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
-                        </h4>
-                        <p class="card-text text-muted small">
+                        <h5 class="news-list-title mt-2">@item.Title</h5>
+                        <p class="news-list-meta">
                             by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
                         </p>
-                        <p class="card-text">
-                            @(item.Content.Length > 180 ? item.Content.Substring(0, 180) + "..." : item.Content)
+                        <p class="news-list-excerpt">
+                            @(item.Content.Length > 160 ? item.Content.Substring(0, 160) + "..." : item.Content)
                         </p>
                     </div>
-                </div>
-            </div>
-        }
-    </div>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <div class="news-list-thumb">
+                            <img src="@item.ImageUrl" alt="@item.Title" />
+                        </div>
+                    }
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted text-center mt-4">No articles match these filters.</p>
+    }
 }
-
-@if (rest.Any())
+else
 {
-    <div class="news-list">
-        @foreach (var item in rest)
-        {
-            <a class="news-list-item" asp-action="Details" asp-route-id="@item.Id">
-                <div class="news-list-content">
-                    <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
-                    <h5 class="news-list-title mt-2">@item.Title</h5>
-                    <p class="news-list-meta">
-                        by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
-                    </p>
-                    <p class="news-list-excerpt">
-                        @(item.Content.Length > 160 ? item.Content.Substring(0, 160) + "..." : item.Content)
-                    </p>
-                </div>
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
+    @if (carouselItems.Any())
+    {
+        <div id="heroCarousel" class="carousel slide carousel-dark hero-carousel mb-5" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < carouselItems.Count; i++)
                 {
-                    <div class="news-list-thumb">
-                        <img src="@item.ImageUrl" alt="@item.Title" />
+                    var item = carouselItems[i];
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="img-wrap img-wrap-hero mb-3">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Title" />
+                            }
+                            else
+                            {
+                                <div class="img-placeholder"><span>DailyNews</span></div>
+                            }
+                        </div>
+                        <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                        <h1 class="hero-title mt-2">
+                            <a asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
+                        </h1>
+                        <p class="text-muted small mb-2">
+                            by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                        </p>
+                        <p class="hero-excerpt">
+                            @(item.Content.Length > 280 ? item.Content.Substring(0, 280) + "..." : item.Content)
+                        </p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-dark">Read Full Story</a>
                     </div>
                 }
-            </a>
-        }
-    </div>
-}
+            </div>
 
-@if (!newsList.Any() && isSearching)
-{
-    <p class="text-muted text-center mt-4">No articles match "@searchQuery".</p>
-}
-else if (!newsList.Any())
-{
-    <p class="text-muted text-center mt-4">No articles yet.</p>
+            <div class="carousel-indicators">
+                @for (int i = 0; i < carouselItems.Count; i++)
+                {
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i"
+                            class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")"
+                            aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    }
+
+    @if (bigCardItems.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            @foreach (var item in bigCardItems)
+            {
+                <div class="col">
+                    <div class="card big-card h-100">
+                        <div class="img-wrap img-wrap-big">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Title" />
+                            }
+                            else
+                            {
+                                <div class="img-placeholder"><span>DN</span></div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                            <h4 class="card-title mt-2">
+                                <a asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
+                            </h4>
+                            <p class="card-text text-muted small">
+                                by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                            </p>
+                            <p class="card-text">
+                                @(item.Content.Length > 180 ? item.Content.Substring(0, 180) + "..." : item.Content)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (rest.Any())
+    {
+        <div class="news-list">
+            @foreach (var item in rest)
+            {
+                <a class="news-list-item" asp-action="Details" asp-route-id="@item.Id">
+                    <div class="news-list-content">
+                        <span class="@BadgeClass(item.Category.Name)">@item.Category.Name</span>
+                        <h5 class="news-list-title mt-2">@item.Title</h5>
+                        <p class="news-list-meta">
+                            by @item.Author.Name &bull; @item.PublishDate.ToString("dd MMM yyyy")
+                        </p>
+                        <p class="news-list-excerpt">
+                            @(item.Content.Length > 160 ? item.Content.Substring(0, 160) + "..." : item.Content)
+                        </p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <div class="news-list-thumb">
+                            <img src="@item.ImageUrl" alt="@item.Title" />
+                        </div>
+                    }
+                </a>
+            }
+        </div>
+    }
+
+    @if (!newsList.Any())
+    {
+        <p class="text-muted text-center mt-4">No articles yet.</p>
+    }
 }

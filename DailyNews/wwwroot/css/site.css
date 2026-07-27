@@ -362,3 +362,57 @@ footer {
         height: 70px;
     }
 }
+
+/* ===== Filter toolbar ===== */
+.filter-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.filter-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-pill {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.35em 0.9em;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    text-decoration: none;
+    background-color: #FFFEFA;
+}
+
+.filter-pill:hover {
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+}
+
+.filter-pill.active {
+    background-color: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
+}
+
+.filter-period select {
+    background-color: #FFFEFA;
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    font-size: 0.85rem;
+}
+
+.filter-period select:focus {
+    border-color: var(--color-politics);
+    box-shadow: 0 0 0 0.15rem rgba(178, 58, 46, 0.15);
+}
